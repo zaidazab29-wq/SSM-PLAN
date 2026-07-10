@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>خطة الترم الكامل - 3rd Year Fall 2025</title>
+<style>
+  :root{
+    --bg:#0d0d17; --panel:#151525; --panel2:#1c1c30; --border:#2a2a45;
+    --text:#e8e8f0; --dim:#9090a8; --accent:#4dabf7;
+    --mus:#4dabf7; --neu:#9775fa; --end:#51cf66; --final:#ff6b6b; --review:#ffd43b; --gap:#495057;
+  }
+  *{box-sizing:border-box;}
+  body{
+    background:var(--bg); color:var(--text); font-family:'Segoe UI',Tahoma,Arial,sans-serif;
+    margin:0; padding:20px; direction:rtl;
+  }
+  h1{font-size:22px; margin-bottom:4px;}
+  .sub{color:var(--dim); font-size:13px; margin-bottom:20px;}
+  .dashboard{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; margin-bottom:24px;
+  }
+  .card{
+    background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:14px; text-align:center;
+  }
+  .card .num{font-size:24px; font-weight:700;}
+  .card .label{font-size:11px; color:var(--dim); margin-top:4px;}
+  .mus .num{color:var(--mus);} .neu .num{color:var(--neu);} .end .num{color:var(--end);}
+  .legend{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; font-size:12px;}
+  .legend span{display:flex; align-items:center; gap:5px;}
+  .dot{width:10px; height:10px; border-radius:3px; display:inline-block;}
+  .controls{display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;}
+  .controls button{
+    background:var(--panel2); color:var(--text); border:1px solid var(--border); border-radius:8px;
+    padding:8px 14px; cursor:pointer; font-size:13px;
+  }
+  .controls button.active{border-color:var(--accent); color:var(--accent);}
+  .week-block{margin-bottom:18px; border:1px solid var(--border); border-radius:12px; overflow:hidden;}
+  .week-header{
+    background:var(--panel2); padding:10px 16px; font-size:13px; font-weight:600;
+    display:flex; justify-content:space-between; align-items:center; cursor:pointer;
+  }
+  .week-body{padding:0;}
+  table{width:100%; border-collapse:collapse;}
+  td,th{padding:10px 12px; font-size:13px; border-bottom:1px solid var(--border); vertical-align:top;}
+  th{background:var(--panel); color:var(--dim); font-weight:600; text-align:right; font-size:12px;}
+  tr.today{outline:2px solid var(--accent); outline-offset:-2px;}
+  .daterow td:first-child{white-space:nowrap; width:110px;}
+  .tag{
+    display:inline-block; font-size:11px; padding:2px 8px; border-radius:6px; font-weight:600; margin-left:6px;
+  }
+  .tag.mus{background:rgba(77,171,247,.15); color:var(--mus);}
+  .tag.neu{background:rgba(151,117,250,.15); color:var(--neu);}
+  .tag.end{background:rgba(81,207,102,.15); color:var(--end);}
+  .tag.final{background:rgba(255,107,107,.15); color:var(--final);}
+  .tag.review{background:rgba(255,212,59,.15); color:var(--review);}
+  .tag.gap{background:rgba(73,80,87,.3); color:var(--dim);}
+  .task{font-size:13px; line-height:1.5;}
+  .task b{color:var(--text);}
+  .exam-row td{background:rgba(255,107,107,.08); font-weight:700; color:var(--final);}
+  input[type=checkbox]{
+    width:18px; height:18px; accent-color:var(--accent); cursor:pointer;
+  }
+  .hidden{display:none;}
+  .note{font-size:12px; color:var(--dim); background:var(--panel2); padding:10px 14px; border-radius:8px; margin-bottom:16px; line-height:1.6;}
+</style>
+
+<!-- Firebase SDK (compat version - works directly in browser, no build tools needed) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBb61x-vuM6LaRdVciq8Zz8fNssJ1D-OBc",
+    authDomain: "mti-semester-plan.firebaseapp.com",
+    databaseURL: "https://mti-semester-plan-default-rtdb.firebaseio.com",
+    projectId: "mti-semester-plan",
+    storageBucket: "mti-semester-plan.firebasestorage.app",
+    messagingSenderId: "310555799424",
+    appId: "1:310555799424:web:bfe983c7e6915235369b65",
+    measurementId: "G-5EVY8DCJKG"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+</script>
+</head>
+<body>
+
+<h1>خطة الترم الكامل — توزيع فعلي بناءً على الحمل الحقيقي</h1>
+<div class="sub">20 سبتمبر 2025 → 21 يناير 2026 · مبنية على عدّ فعلي للمحاضرات من الجدول الرسمي</div>
+
+<div class="note">
+هذا الجدول مش بديل عن حضور المحاضرات الرسمية، هو خطة الـ <b>self-study والمراجعة</b> اللي بتتوزع فوق الجدول الرسمي.
+كل يوم جمعة (يوم الأجازة) اتحول لـ <span style="color:var(--review)">يوم مراجعة إجباري</span> بدل ما يضيع، وده اللي بيمنع انهيار الأسبوع التالت.
+اضغط على أي مربع (☐) عشان تعلّم إنك خلصت اليوم ده — بيتحفظ تلقائيًا.
+</div>
+
+<div class="dashboard" id="dashboard"></div>
+
+<div class="legend">
+  <span><i class="dot" style="background:var(--mus)"></i> MUS III 325</span>
+  <span><i class="dot" style="background:var(--neu)"></i> NEU II 326</span>
+  <span><i class="dot" style="background:var(--end)"></i> END 327</span>
+  <span><i class="dot" style="background:var(--review)"></i> يوم مراجعة (الجمعة)</span>
+  <span><i class="dot" style="background:var(--final)"></i> امتحان</span>
+  <span><i class="dot" style="background:var(--gap)"></i> فترة راحة/تجميع</span>
+</div>
+
+<div class="controls" id="controls"></div>
+
+<div id="weeks"></div>
+
+<script>
+// ---------- CONFIG (from actual counted timetable) ----------
+const MODULES = [
+  { key:'mus', name:'MUS III 325', color:'var(--mus)', tag:'mus',
+    start:'2025-09-20', contentEnd:'2025-10-16', total:78,
+    subjects:'Anatomy 21L/12P · Histology 9L/3P · Physiology 6L/2P · Pathology 5L/2P · Micro 6L/1P · Para 6L/3P · Biochem 1L/1P',
+    examModule:'2025-10-22', examPractical:'2025-10-23' },
+  { key:'neu', name:'NEU II 326', color:'var(--neu)', tag:'neu',
+    start:'2025-10-25', contentEnd:'2025-11-27', total:110,
+    subjects:'Physiology 21L/5P · Anatomy 15L/8P · Pharmacology 18L/1P · Histology 6L/6P · Biochem 8L/3P · Pathology 8L/2P · Micro 5L/2P · Para 2L',
+    examModule:'2025-12-01', examPractical:'2025-12-02' },
+  { key:'end', name:'END 327', color:'var(--end)', tag:'end',
+    start:'2025-12-06', contentEnd:'2025-12-25', total:71,
+    subjects:'Physiology 10L/8P · Pathology 9L/4P · Pharmacology 9L/3P · Biochem 8L/6P · Histology 6L/2P · Anatomy 5L/1P',
+    examModule:'2025-12-29', examPractical:'2025-12-31' },
+];
+
+const HOLIDAYS = ['2025-10-07']; // Armed Forces Day
+const FINALS = [
+  { name:'ECE IV.328 Final', date:'2025-12-25' },
+  { name:'MUS III.325 Final', date:'2026-01-12' },
+  { name:'NEU II.326 Final', date:'2026-01-14' },
+  { name:'MPC III.329 Final', date:'2026-01-17' },
+  { name:'END.327 Final', date:'2026-01-21' },
+];
+const RANGE_END = '2026-01-21';
+
+// ---------- HELPERS ----------
+function d(s){ return new Date(s+'T00:00:00'); }
+function fmt(date){ return date.toISOString().slice(0,10); }
+function isFriday(date){ return date.getDay()===5; }
+function addDays(date,n){ const nd=new Date(date); nd.setDate(nd.getDate()+n); return nd; }
+function arWeekday(date){
+  const names=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  return names[date.getDay()];
+}
+function arDate(date){
+  const months=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  return `${date.getDate()} ${months[date.getMonth()]}`;
+}
+
+// build list of all dates in range
+let allDates = [];
+let cur = d('2025-09-20');
+const end = d(RANGE_END);
+while(cur <= end){
+  allDates.push(new Date(cur));
+  cur = addDays(cur,1);
+}
+
+// compute content-days count per module (excludes Fridays + holidays)
+MODULES.forEach(m=>{
+  let count=0;
+  let c = d(m.start);
+  const ce = d(m.contentEnd);
+  while(c<=ce){
+    const ds = fmt(c);
+    if(!isFriday(c) && !HOLIDAYS.includes(ds)) count++;
+    c = addDays(c,1);
+  }
+  m.contentDays = count;
+  m.perDay = (m.total / count);
+});
+
+// assign each date a "slot"
+function getSlot(dateObj){
+  const ds = fmt(dateObj);
+  // exam days first
+  for(const f of FINALS) if(f.date===ds) return {type:'final', label:f.name};
+  for(const m of MODULES){
+    if(ds===m.examModule) return {type:'exam', label:`${m.name} — End-Module Exam`, color:m.color};
+    if(ds===m.examPractical) return {type:'exam', label:`${m.name} — Practical Exam`, color:m.color};
+  }
+  if(HOLIDAYS.includes(ds)) return {type:'holiday', label:'إجازة رسمية (عيد القوات المسلحة)'};
+  if(isFriday(dateObj)) return {type:'friday'};
+  // inside a module's content range
+  for(const m of MODULES){
+    if(dateObj>=d(m.start) && dateObj<=d(m.contentEnd)) return {type:'content', module:m};
+  }
+  // revision buffer: after contentEnd, before examModule
+  for(const m of MODULES){
+    if(dateObj> d(m.contentEnd) && dateObj < d(m.examModule)) return {type:'buffer', module:m};
+  }
+  // between modules / after last module before finals runway
+  const lastEnd = d(MODULES[MODULES.length-1].examPractical);
+  const firstFinal = d(FINALS.find(f=>f.date>fmt(lastEnd)).date);
+  if(dateObj>lastEnd && dateObj<d('2026-01-12')) return {type:'finalsrunway'};
+  if(dateObj>d(MODULES[0].examPractical) && dateObj<d(MODULES[1].start)) return {type:'gap'};
+  if(dateObj>d(MODULES[1].examPractical) && dateObj<d(MODULES[2].start)) return {type:'gap'};
+  if(dateObj>=d('2026-01-12') && dateObj<=end) return {type:'examperiod'};
+  return {type:'gap'};
+}
+
+// running content counters per module to produce "lecture X-Y of TOTAL" ranges
+MODULES.forEach(m=>m._counter=0);
+
+function buildTask(slot, dateObj){
+  if(slot.type==='final'){
+    return {tag:'final', tagLabel:'FINAL', html:`<b>${slot.label}</b> — يوم الامتحان. مراجعة خفيفة صباحًا فقط (خلاصة/high-yield)، ممنوع مذاكرة جديد.`};
+  }
+  if(slot.type==='exam'){
+    return {tag:'final', tagLabel:'EXAM', html:`<b>${slot.label}</b>`};
+  }
+  if(slot.type==='holiday'){
+    return {tag:'gap', tagLabel:'إجازة', html:`إجازة رسمية — راحة كاملة أو مراجعة اختيارية خفيفة (30 دقيقة كحد أقصى).`};
+  }
+  if(slot.type==='friday'){
+    return {tag:'review', tagLabel:'مراجعة', html:`<b>يوم المراجعة الأسبوعي:</b> Active recall لكل حاجة اتاخدت الأسبوع ده (اقفل النوت واكتب/جاوب MCQs) + مراجعة سريعة (10-15 د) لأسبوعين قبل كده.`};
+  }
+  if(slot.type==='content'){
+    const m = slot.module;
+    const startN = m._counter+1;
+    m._counter += m.perDay;
+    const endN = Math.round(m._counter);
+    return {
+      tag:m.tag, tagLabel:m.name,
+      html:`<b>وحدات ${startN}–${endN} من ${m.total}</b> (≈${m.perDay.toFixed(1)}/يوم) — سمع + Active Recall في نفس اليوم. راجع بسرعة وحدات الأمس قبل ما تبدأ الجديد.`
+    };
+  }
+  if(slot.type==='buffer'){
+    const m = slot.module;
+    return {tag:m.tag, tagLabel:m.name, html:`<b>مراجعة شاملة (تجميع) قبل الامتحان</b> — مش تعلم من الأول، ده تجميع لحاجات اتعملها recall عليها أول بأول.`};
+  }
+  if(slot.type==='gap'){
+    return {tag:'gap', tagLabel:'فاصل', html:`فترة فاصلة بين المديولات — راحة + مراجعة اختيارية خفيفة للمديول اللي خلص.`};
+  }
+  if(slot.type==='finalsrunway'){
+    return {tag:'review', tagLabel:'Finals Prep', html:`مراجعة تراكمية شاملة للـ 3 مديولات (MUS, NEU, END) + MPC + ECE استعدادًا لموسم الـ Finals. وزّع اليوم: مديول واحد بعمق + مراجعة سريعة للباقي.`};
+  }
+  if(slot.type==='examperiod'){
+    return {tag:'final', tagLabel:'Finals', html:`مراجعة مركزة لأقرب امتحان قادم فقط (high-yield + MCQs) — لا تفتح مواد بعيدة عن الامتحان الجاي.`};
+  }
+  return {tag:'gap', tagLabel:'', html:''};
+}
+
+// ---------- RENDER ----------
+const dashboard = document.getElementById('dashboard');
+dashboard.innerHTML = MODULES.map(m=>`
+  <div class="card ${m.key}">
+    <div class="num">${m.total}</div>
+    <div class="label">${m.name}<br>${m.contentDays} يوم مذاكرة · ${m.perDay.toFixed(1)}/يوم</div>
+  </div>
+`).join('') + `
+  <div class="card">
+    <div class="num" style="color:var(--review)">${allDates.filter(isFriday).length}</div>
+    <div class="label">يوم مراجعة (جمعة)</div>
+  </div>
+  <div class="card">
+    <div class="num" style="color:var(--final)">${FINALS.length}</div>
+    <div class="label">امتحانات نهائية</div>
+  </div>
+`;
+
+// group into weeks (Sat-Thu blocks, matching official week numbering starting 20/9)
+const weeks = [];
+let wStart = d('2025-09-20');
+let wIndex = 1;
+while(wStart <= end){
+  const wDates = allDates.filter(dt => dt>=wStart && dt < addDays(wStart,7));
+  if(wDates.length) weeks.push({index:wIndex, dates:wDates});
+  wStart = addDays(wStart,7);
+  wIndex++;
+}
+
+const weeksContainer = document.getElementById('weeks');
+const todayStr = fmt(new Date());
+
+weeks.forEach(w=>{
+  const block = document.createElement('div');
+  block.className = 'week-block';
+  const first = w.dates[0], last = w.dates[w.dates.length-1];
+  block.innerHTML = `
+    <div class="week-header" onclick="this.nextElementSibling.classList.toggle('hidden')">
+      <span>الأسبوع ${w.index} &nbsp; (${arDate(first)} → ${arDate(last)})</span>
+      <span style="color:var(--dim); font-size:11px;">اضغط للطي/الفتح</span>
+    </div>
+    <div class="week-body">
+      <table>
+        <thead><tr><th>التاريخ</th><th>المحتوى</th><th style="width:40px">✓</th></tr></thead>
+        <tbody>
+          ${w.dates.map(dt=>{
+            const slot = getSlot(dt);
+            const task = buildTask(slot, dt);
+            const ds = fmt(dt);
+            const isExamRow = slot.type==='final' || slot.type==='exam';
+            return `<tr class="daterow ${ds===todayStr?'today':''} ${isExamRow?'exam-row':''}">
+              <td>${arWeekday(dt)}<br><span style="color:var(--dim); font-size:11px;">${ds}</span></td>
+              <td>
+                ${task.tagLabel?`<span class="tag ${task.tag}">${task.tagLabel}</span>`:''}
+                <div class="task">${task.html}</div>
+              </td>
+              <td><input type="checkbox" data-date="${ds}" onchange="toggleDay('${ds}', this.checked)"></td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+  weeksContainer.appendChild(block);
+});
+
+// ---------- PERSISTENCE (Firebase Firestore) ----------
+// All checkbox states are stored in a single document: progress/checks
+// so we only need ONE read and ONE write per change (fast + cheap).
+const progressDocRef = db.collection('progress').doc('checks');
+
+async function toggleDay(dateStr, checked){
+  try{
+    await progressDocRef.set({ [dateStr]: checked }, { merge: true });
+  }catch(e){
+    console.error('Firestore write error:', e);
+    alert('حصل خطأ في الحفظ، تأكد من اتصال الإنترنت.');
+  }
+}
+
+async function loadChecks(){
+  try{
+    const doc = await progressDocRef.get();
+    if(doc.exists){
+      const data = doc.data();
+      for(const dateStr in data){
+        if(data[dateStr]){
+          const cb = document.querySelector(`input[data-date="${dateStr}"]`);
+          if(cb) cb.checked = true;
+        }
+      }
+    }
+  }catch(e){
+    console.error('Firestore read error:', e);
+  }
+}
+loadChecks();
+
+// Live sync: if you tick a box on your phone, your laptop updates automatically too.
+progressDocRef.onSnapshot((doc)=>{
+  if(!doc.exists) return;
+  const data = doc.data();
+  for(const dateStr in data){
+    const cb = document.querySelector(`input[data-date="${dateStr}"]`);
+    if(cb && cb.checked !== !!data[dateStr]) cb.checked = !!data[dateStr];
+  }
+});
+
+// scroll to current week
+window.addEventListener('load', ()=>{
+  const t = document.querySelector('.today');
+  if(t) t.scrollIntoView({block:'center'});
+});
+</script>
+</body>
+</html>
